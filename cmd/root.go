@@ -7,33 +7,14 @@ import (
 	"github.com/spf13/cobra"
 )
 
-/*
-repos, err := libalpm.GetConfigRepos(libalpm.DefaultConfig)
-	if err != nil {
-		fmt.Printf("error: %s", err)
-		os.Exit(1)
-	}
-	found := libalpm.CheckSyncDBs(repos, libalpm.DefaultDBPath)
-	fmt.Println(found)
-
-	result, err := aur.Search("auracle", aur.Name)
-	if err != nil {
-		fmt.Println(err)
-	} else if result.Type == "error" {
-		fmt.Println(result.Error)
-	} else {
-		fmt.Println(result)
-	}
-*/
-
 var rootCommand = &cobra.Command{
-	Use:   "lksjdflkjdsaf",
-	Short: "",
-	Long:  "",
+	Use:   "pkg",
+	Short: "this is the short info",
+	Long:  "this is the long info",
 }
 
 func init() {
-	rootCommand.AddCommand(versionCommand)
+	rootCommand.AddCommand(infoCommand)
 }
 
 func Execute() {

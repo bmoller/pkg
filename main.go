@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/bmoller/aur/cmd"
+	"github.com/bmoller/pkg/cmd"
 )
 
 func main() {
