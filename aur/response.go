@@ -4,29 +4,28 @@ import (
 	"encoding/json"
 )
 
-type responseBase struct {
-	Version     int    `json:"version"`
-	Type        string `json:"type"`
-	ResultCount int    `json:"resultcount"`
+type result struct {
+	ResultCount int          `json:"resultcount"`
+	Type        string       `json:"type"`
+	Version     int          `json:"version"`
+	Error       string       `json:"error"`
+	Results     []aurPackage `json:"results"`
 }
 
-type errorResponse struct {
-	responseBase
-	Error   string        `json:"error"`
-	Results []interface{} `json:"results,omitempty"`
+/*
+String provides the JSON string representation of an AUR result by marshalling
+the object using Go's json package. If the function returns an error the
+returned string is empty.
+*/
+func (r *result) String() string {
+	if j, err := json.Marshal(r); err != nil {
+		return ""
+	} else {
+		return string(j)
+	}
 }
 
-type searchResponse struct {
-	responseBase
-	Results []packageBasic `json:"results"`
-}
-
-type infoResponse struct {
-	responseBase
-	Results []packageDetailed `json:"results"`
-}
-
-type packageBasic struct {
+type aurPackage struct {
 	ID             int
 	Name           string
 	Description    string
@@ -41,41 +40,26 @@ type packageBasic struct {
 	Version        string
 	URLPath        string
 	URL            string
+	Submitter      string
+	License        []string
+	Depends        []string
+	MakeDepends    []string
+	OptDepends     []string
+	CheckDepends   []string
+	Provides       []string
+	Conflicts      []string
+	Replaces       []string
+	Groups         []string
+	Keywords       []string
+	CoMaintainers  []string
 }
 
-type response struct {
-	ResultCount int               `json:"resultcount"`
-	Type        string            `json:"type"`
-	Version     int               `json:"version"`
-	Error       string            `json:"error"`
-	Results     []packageDetailed `json:"results"`
-}
-
-func (r *response) String() string {
-	if j, err := json.Marshal(r); err != nil {
-		return ""
-	} else {
-		return string(j)
-	}
-}
-
-type packageDetailed struct {
-	packageBasic
-	Submitter     string
-	License       []string
-	Depends       []string
-	MakeDepends   []string
-	OptDepends    []string
-	CheckDepends  []string
-	Provides      []string
-	Conflicts     []string
-	Replaces      []string
-	Groups        []string
-	Keywords      []string
-	CoMaintainers []string
-}
-
-func (p packageDetailed) String() string {
+/*
+String provides the JSON string representation of an AUR result by marshalling
+the object using Go's json package. If the function returns an error the
+returned string is empty.
+*/
+func (p aurPackage) String() string {
 	if j, err := json.Marshal(p); err != nil {
 		return ""
 	} else {
