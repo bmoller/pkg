@@ -9,7 +9,7 @@ import (
 	"github.com/bmoller/pkg/aur"
 )
 
-var infoCommand = &cobra.Command{
+var infoCmd = &cobra.Command{
 	Use:   "info package",
 	Short: "Display details of an AUR package",
 	Long: `The info command queries the AUR for details about a user-uploaded package. The
@@ -20,7 +20,7 @@ for official packages.`,
 }
 
 func info(cmd *cobra.Command, args []string) {
-	switch results, err := aur.Info([]string{args[0]}); {
+	switch results, err := aur.Info(args); {
 	case err != nil:
 		fmt.Println(err)
 		os.Exit(1)

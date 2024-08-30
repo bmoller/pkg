@@ -29,7 +29,7 @@ func GetConfigRepos(path string) (names []string, err error) {
 	if err != nil && os.IsNotExist(err) {
 		return nil, fmt.Errorf("file at %s does not exist", path)
 	} else if err != nil {
-		return nil, fmt.Errorf("unknown error: %s", err.Error())
+		return nil, fmt.Errorf("unknown error: %w", err)
 	}
 
 	config := bufio.NewScanner(file)
@@ -42,7 +42,7 @@ func GetConfigRepos(path string) (names []string, err error) {
 		}
 	}
 	if err = config.Err(); err != nil {
-		return nil, fmt.Errorf("error while reading pacman config: %s", err)
+		return nil, fmt.Errorf("error while reading pacman config: %w", err)
 	}
 
 	return

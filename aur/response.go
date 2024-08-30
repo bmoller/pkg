@@ -51,9 +51,9 @@ type aurPackage struct {
 	Maintainer     string
 	NumVotes       int
 	Popularity     json.Number
-	FirstSubmitted int
-	LastModified   int
-	OutOfDate      string
+	FirstSubmitted int // Unix timestamp
+	LastModified   int // Unix timestamp
+	OutOfDate      int // Unix timestamp
 	Version        string
 	URLPath        string
 	URL            string
