@@ -47,3 +47,11 @@ func GetForeignPackages(root, dbPath string, repos []string) (pkgs map[string]st
 
 	return
 }
+
+/*
+CompareVersions uses libalpm's logic to compare two versions of arbitrary formats.
+The return value is negative when a is less than b, zero when a and b are equal, and positive when b is greater than a.
+*/
+func CompareVersions(a, b string) int {
+	return int(C.alpm_pkg_vercmp(C.CString(a), C.CString(b)))
+}

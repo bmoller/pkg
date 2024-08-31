@@ -17,6 +17,7 @@ func init() {
 	rootCommand.AddCommand(fetchCmd)
 	rootCommand.AddCommand(infoCmd)
 	rootCommand.AddCommand(searchCmd)
+	rootCommand.AddCommand(updatesCmd)
 }
 
 func Execute() {
