@@ -1,8 +1,28 @@
+/*
+ * libalpm.go
+ *
+ * Copyright (c) 2024 Brandon Moller
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package libalpm
 
 import (
 	"bufio"
 	"fmt"
+	"maps"
 	"os"
 	"path/filepath"
 	"strings"
@@ -25,12 +45,12 @@ explanatory message in err.
 */
 func GetConfigRepos(path string) (names []string, err error) {
 	file, err := os.Open(path)
-	defer file.Close()
 	if err != nil && os.IsNotExist(err) {
 		return nil, fmt.Errorf("file at %s does not exist", path)
 	} else if err != nil {
 		return nil, fmt.Errorf("unknown error: %w", err)
 	}
+	defer file.Close()
 
 	config := bufio.NewScanner(file)
 	for config.Scan() {
@@ -55,6 +75,24 @@ func CheckSyncDBs(names []string, dbPath string) (found []string) {
 			found = append(found, entry)
 		}
 	}
+
+	return
+}
+
+func GetForeignPackages(root, dbPath string, repos []string) (pkgs map[string]string, err error) {
+	pkgs, err = GetLocalPackages(root, dbPath)
+	if err != nil {
+		return nil, err
+	}
+	syncPkgs, err := GetSyncPackages(root, dbPath, repos)
+	if err != nil {
+		return nil, err
+	}
+
+	maps.DeleteFunc(pkgs, func(k, _ string) bool {
+		_, ok := syncPkgs[k]
+		return ok
+	})
 
 	return
 }

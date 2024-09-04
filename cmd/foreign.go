@@ -1,5 +1,5 @@
 /*
- * root.go
+ * foreign.go
  *
  * Copyright (c) 2024 Brandon Moller
  *
@@ -21,28 +21,32 @@ package cmd
 
 import (
 	"fmt"
+	"maps"
 	"os"
+	"slices"
 
 	"github.com/spf13/cobra"
+
+	"github.com/bmoller/pkg/libalpm"
 )
 
-var rootCommand = &cobra.Command{
-	Use:   "pkg",
-	Short: "this is the short info",
-	Long:  "this is the long info",
+var foreignCmd = &cobra.Command{
+	Use:   "foreign",
+	Short: "List foreign packages",
+	Long: `The foreign command lists locally-installed packages that are not found in any
+configured sync repository. This command is equivalent to 'pacman -Qm'.`,
+	Run: foreign,
 }
 
-func init() {
-	rootCommand.AddCommand(fetchCmd)
-	rootCommand.AddCommand(foreignCmd)
-	rootCommand.AddCommand(infoCmd)
-	rootCommand.AddCommand(searchCmd)
-	rootCommand.AddCommand(updatesCmd)
-}
-
-func Execute() {
-	if err := rootCommand.Execute(); err != nil {
+func foreign(cmd *cobra.Command, args []string) {
+	if pkgs, err := libalpm.GetForeignPackages("/", "/var/lib/pacman", []string{"core", "extra"}); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
+	} else {
+		names := slices.Collect(maps.Keys(pkgs))
+		slices.Sort(names)
+		for _, pkg := range names {
+			fmt.Printf("%s %s\n", pkg, pkgs[pkg])
+		}
 	}
 }
